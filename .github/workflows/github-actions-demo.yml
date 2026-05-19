@@ -1,18 +1,45 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Classroom CI/CD Demo
+
+on:
+  # Allows you and your students to manually trigger the pipeline with a button click
+  workflow_dispatch:
+  # Triggers automatically when anyone pushes code
+  push:
+    branches: [ main, master ]
+
 jobs:
-  Explore-GitHub-Actions:
+  # JOB 1: Demonstrates a successful automation step
+  passing-job:
+    name: Core Logic Verification
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v6
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      - name: Stage 1 - Code Checkout Simulation
+        run: echo "📦 Simulating pulling the source code from GitHub repository..."
+
+      - name: Stage 2 - Running Static Quality Checks
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          echo "🔍 Analyzing syntax structure..."
+          echo "✅ No syntax errors found."
+
+      - name: Stage 3 - Simulating Passing Quality Engineering Tests
+        # The 'exit 0' command explicitly tells GitHub this step succeeded
+        run: |
+          echo "🧪 Running Unit and Integration Tests..."
+          echo "Test 1: User Authentication Flow -> PASSED"
+          echo "Test 2: Database Connection Pool -> PASSED"
+          exit 0
+
+  # JOB 2: Demonstrates exactly what happens when a quality check breaks
+  failing-job:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stage 1 - Initializing Scanner
+        run: echo "🛡️ Scanning third-party dependencies for known vulnerabilities..."
+
+      - name: Stage 2 - Flagging Vulnerabilities
+        # The 'exit 1' command forces a failure, changing the pipeline status to red
+        run: |
+          echo "❌ CRITICAL VULNERABILITY FOUND: CVE-2026-9999 detected in outdated package!"
+          echo "💥 Breaking the build to prevent compromised deployment."
+          exit 1
