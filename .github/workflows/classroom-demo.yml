@@ -29,17 +29,4 @@ jobs:
           echo "Test 2: Database Connection Pool -> PASSED"
           exit 0
 
-  # JOB 2: Demonstrates exactly what happens when a quality check breaks
-  failing-job:
-    name: Security Vulnerability Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Stage 1 - Initializing Scanner
-        run: echo "🛡️ Scanning third-party dependencies for known vulnerabilities..."
-
-      - name: Stage 2 - Flagging Vulnerabilities
-        # The 'exit 1' command forces a failure, changing the pipeline status to red
-        run: |
-          echo "❌ CRITICAL VULNERABILITY FOUND: CVE-2026-9999 detected in outdated package!"
-          echo "💥 Breaking the build to prevent compromised deployment."
-          exit 1
+  
