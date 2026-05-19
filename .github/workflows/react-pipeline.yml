@@ -42,7 +42,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
       - name: Execute Headless Test Suite
         # Launches React app, verifies port 3000 is open, executes Cypress, closes server
