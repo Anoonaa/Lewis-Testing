@@ -1,0 +1,25 @@
+name: Classroom CI/CD Demo
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  # JOB 1: Demonstrates a successful automation step
+  passing-job:
+    name: Core Logic Verification
+    runs-on: windows-latest, ubuntu-latest 
+    steps:
+      - name: Stage 1 - Code Checkout 
+        run: npm install   
+        
+      - name: Stage 2 - Build Application
+        run: npm run dev
+
+    
+
+      - name: Stage 3 - Running Static Quality Checks
+        run: |
+          echo "Hurray the app ran!"
+
+     

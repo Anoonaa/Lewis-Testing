@@ -1,0 +1,68 @@
+name: React Integration Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  # Stage 1: Build Validation
+  build-application:
+    name: Build Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Initialize Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Compile Production Artifacts
+        run: npm run build
+
+  # Stage 2: Quality Gate (Blocks deployment if tests fail)
+  automation-gate:
+    name: Cypress E2E Automation
+    runs-on: ubuntu-latest
+    needs: build-application # Links job to the build stage graph node
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Initialize Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Execute Headless Test Suite
+        # Launches React app, verifies port 3000 is open, executes Cypress, closes server
+        run: npm run ci:test
+
+      - name: Archive Failure Artifacts
+        if: failure() # Runs only if automated assertions fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots/
+          retention-days: 3
+
+  # Stage 3: Deployment (Dependent on automation-gate success)
+  deploy-application:
+    name: Environment Deployment
+    runs-on: ubuntu-latest
+    needs: automation-gate # Restricts execution to successful test runs
+    steps:
+      - name: Execute Deployment Routine
+        run: |
+          echo "Syncing production build directory to web server..."
+          echo "Deployment successful. Monitoring live environment health."
