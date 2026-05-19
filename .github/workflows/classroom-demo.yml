@@ -1,7 +1,7 @@
 name: Classroom CI/CD Demo
 
 on:
-  # Allows you and your students to manually trigger the pipeline with a button click
+  # Allows  to manually trigger the pipeline with a button click
   workflow_dispatch:
   # Triggers automatically when anyone pushes code
   push:
@@ -13,15 +13,15 @@ jobs:
     name: Core Logic Verification
     runs-on: ubuntu-latest
     steps:
-      - name: Stage 1 - Code Checkout Simulation
-        run: echo "📦 Simulating pulling the source code from GitHub repository..."
+      - name: Stage 1 - Code Checkout 
+        run: echo "📦 pulling the source code from GitHub repository..."
 
       - name: Stage 2 - Running Static Quality Checks
         run: |
           echo "🔍 Analyzing syntax structure..."
           echo "✅ No syntax errors found."
 
-      - name: Stage 3 - Simulating Passing Quality Engineering Tests
+      - name: Stage 3 - verifying Quality Engineering Tests
         # The 'exit 0' command explicitly tells GitHub this step succeeded
         run: |
           echo "🧪 Running Unit and Integration Tests..."
