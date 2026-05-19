@@ -1,1 +1,0 @@
-echo "📦 pulling the source code from GitHub repository..."
