@@ -1,0 +1,40 @@
+{
+  "starterOrder": [
+    {
+      "name": "Canvas Tote",
+      "quantity": 1
+    },
+    {
+      "name": "Coffee Beans",
+      "quantity": 2
+    }
+  ],
+  "bundleOrder": [
+    {
+      "name": "Denim Jacket",
+      "quantity": 1
+    },
+    {
+      "name": "Graphic Tee",
+      "quantity": 2
+    },
+    {
+      "name": "Sneaker Spray",
+      "quantity": 1
+    }
+  ],
+  "AnoonaOrder": [
+    {
+      "name": "Lavender Candle",
+      "quantity": 1
+    },
+    {
+      "name": "Sneaker Spray",
+      "quantity": 2
+    },
+    {
+      "name": "Graphic Tee",
+      "quantity": 1
+    }
+  ]
+}

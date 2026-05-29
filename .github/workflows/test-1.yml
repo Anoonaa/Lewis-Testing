@@ -1,25 +1,137 @@
-name: Classroom CI/CD Demo
+name: Visual Regression Pipeline
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main, master ]
 
 jobs:
-  # JOB 1: Demonstrates a successful automation step
-  passing-job:
-    name: Core Logic Verification
-    runs-on: windows-latest, ubuntu-latest 
+  prep:
+    name: Build Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Stage 1 - Code Checkout 
-        run: npm install   
-        
-      - name: Stage 2 - Build Application
-        run: npm run dev
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-    
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            Lewis/package-lock.json
 
-      - name: Stage 3 - Running Static Quality Checks
-        run: |
-          echo "Hurray the app ran!"
+      - name: Install Root Test Runner
+        run: npm ci --no-audit --no-fund
+
+      - name: Install App Dependencies
+        run: npm --prefix Lewis ci --no-audit --no-fund
+
+      - name: Lint App
+        run: npm --prefix Lewis run lint
+
+      - name: Build App
+        run: npm --prefix Lewis run build
+
+  day2-architecture:
+    name: Regression Gate - Day 2 Architecture
+    runs-on: ubuntu-latest
+    needs: prep
+    timeout-minutes: 25
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Root Test Runner
+        run: npm ci --no-audit --no-fund
+
+      - name: Install App Dependencies
+        run: npm --prefix Lewis ci --no-audit --no-fund
+
+      - name: Run Day 2 Regression Test
+        run: npm run ci:regression:architecture
+
+      - name: Upload Day 2 Evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-day2-evidence
+          path: |
+            cypress/screenshots/**
+            cypress/videos/**
+          if-no-files-found: ignore
+
+  day3-network:
+    name: Regression Gate - Day 3 Network
+    runs-on: ubuntu-latest
+    needs: day2-architecture
+    timeout-minutes: 25
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Root Test Runner
+        run: npm ci --no-audit --no-fund
+
+      - name: Install App Dependencies
+        run: npm --prefix Lewis ci --no-audit --no-fund
+
+      - name: Run Day 3 Network Regression Test
+        run: npm run ci:regression:network
+
+      - name: Upload Day 3 Network Evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-day3-network-evidence
+          path: |
+            cypress/screenshots/**
+            cypress/videos/**
+          if-no-files-found: ignore
+
+  practical-assessment:
+    name: Regression Gate - Practical Assessment
+    runs-on: ubuntu-latest
+    needs: day3-network
+    timeout-minutes: 25
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Root Test Runner
+        run: npm ci --no-audit --no-fund
+
+      - name: Install App Dependencies
+        run: npm --prefix Lewis ci --no-audit --no-fund
+
+      - name: Run Practical Assessment Regression Test
+        run: npm run ci:regression:practical
+
+      - name: Upload Practical Evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-practical-evidence
+          path: |
+            cypress/screenshots/**
+            cypress/videos/**
+          if-no-files-found: ignore
 
      

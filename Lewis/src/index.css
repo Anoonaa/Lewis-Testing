@@ -1,0 +1,71 @@
+:root {
+  --ink: #1c1917;
+  --muted: #675d54;
+  --accent: #174d45;
+  --accent-2: #c25c2b;
+  --line: rgba(28, 25, 23, 0.12);
+  --shadow:
+    rgba(25, 20, 15, 0.08) 0 24px 60px -20px,
+    rgba(25, 20, 15, 0.1) 0 8px 20px -12px;
+  --display: 'Georgia', 'Times New Roman', serif;
+  --sans: 'Trebuchet MS', 'Segoe UI', sans-serif;
+
+  font-family: var(--sans);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top, rgba(194, 92, 43, 0.14), transparent 30%),
+    linear-gradient(180deg, #fff9f2 0%, #f5efe7 56%, #ece5db 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+body,
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+button,
+input,
+textarea {
+  font-size: 1rem;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}

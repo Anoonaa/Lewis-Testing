@@ -1,4 +1,4 @@
-name: Visual Deployment Pipeline
+name: Visual Release Pipeline
 
 on:
   workflow_dispatch:
@@ -6,37 +6,105 @@ on:
     branches: [ main, master ]
 
 jobs:
-  # Stage 1: Application Compilation
-  build-job:
-    name: Build Application
+  prep:
+    name: Build Gate
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Compile Source Code
-        run: |
-          echo "Minifying JS assets..."
-          echo "Compiling style sheets..."
-          echo "Build compilation completed successfully."
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-  # Stage 2: Quality Gate Execution (Depends on successful build completion)
-  test-job:
-    name: Cypress Automation Gate
-    runs-on: ubuntu-latest
-    needs: build-job # Enforces sequential dependency to create visual quality gate
-    steps:
-      - name: Execute Regression Test Suite
-        run: |
-          echo "Initializing headless test execution engine..."
-          echo "Executing 14 core E2E regression assertions..."
-          echo "All structural assertions passed. Exit code 0 returned."
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            Lewis/package-lock.json
 
-  # Stage 3: Environment Deployment (Dependent on quality gate clearance)
-  deploy-job:
-    name: Production Deployment
+      - name: Install Root Test Runner
+        run: npm ci --no-audit --no-fund
+
+      - name: Install App Dependencies
+        run: npm --prefix Lewis ci --no-audit --no-fund
+
+      - name: Lint App
+        run: npm --prefix Lewis run lint
+
+      - name: Build App
+        run: npm --prefix Lewis run build
+
+  smoke:
+    name: Smoke Gate
     runs-on: ubuntu-latest
-    needs: test-job # Restricts execution; fails safe if automation suite returns non-zero code
+    needs: prep
+    timeout-minutes: 30
     steps:
-      - name: Deploy to Cloud Environment
-        run: |
-          echo "Pushing verified artifacts to cloud infrastructure..."
-          echo "Purging edge distribution caches..."
-          echo "Deployment routine finalized. System is live."
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Root Test Runner
+        run: npm ci --no-audit --no-fund
+
+      - name: Install App Dependencies
+        run: npm --prefix Lewis ci --no-audit --no-fund
+
+      - name: Run Smoke Pipeline
+        run: npm run ci:smoke
+
+      - name: Upload Smoke Evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-smoke-evidence
+          path: |
+            cypress/screenshots/**
+            cypress/videos/**
+          if-no-files-found: ignore
+
+  regression:
+    name: Regression Gate
+    runs-on: ubuntu-latest
+    needs: smoke
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Root Test Runner
+        run: npm ci --no-audit --no-fund
+
+      - name: Install App Dependencies
+        run: npm --prefix Lewis ci --no-audit --no-fund
+
+      - name: Run Regression Pipeline
+        run: npm run ci:regression
+
+      - name: Upload Regression Evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-regression-evidence
+          path: |
+            cypress/screenshots/**
+            cypress/videos/**
+          if-no-files-found: ignore
+
+  signoff:
+    name: Release Signoff
+    runs-on: ubuntu-latest
+    needs: regression
+    steps:
+      - name: Confirm Pipeline Completion
+        run: echo "Visual release pipeline completed after smoke and regression gates passed."

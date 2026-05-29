@@ -1,0 +1,44 @@
+[
+  {
+    "sku": "canvas-tote",
+    "name": "Canvas Tote",
+    "category": "Accessories",
+    "price": 18,
+    "badge": "Popular"
+  },
+  {
+    "sku": "coffee-beans",
+    "name": "Coffee Beans",
+    "category": "Grocery",
+    "price": 16,
+    "badge": "Fresh roast"
+  },
+  {
+    "sku": "denim-jacket",
+    "name": "Denim Jacket",
+    "category": "Apparel",
+    "price": 48,
+    "badge": "New arrival"
+  },
+  {
+    "sku": "graphic-tee",
+    "name": "Graphic Tee",
+    "category": "Apparel",
+    "price": 28,
+    "badge": "Bestseller"
+  },
+  {
+    "sku": "lavender-candle",
+    "name": "Lavender Candle",
+    "category": "Home",
+    "price": 24,
+    "badge": "Giftable"
+  },
+  {
+    "sku": "sneaker-spray",
+    "name": "Sneaker Spray",
+    "category": "Care",
+    "price": 12,
+    "badge": "Last chance"
+  }
+]

@@ -1,31 +1,22 @@
 {
-  "name": "lewis",
+  "name": "lewis-visual-pipelines",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "cy:run": "cypress run --browser chrome",
-    "ci:test": "start-server-and-test start http://localhost:5173 cy:run"
-  },
-  "dependencies": {
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "dev:app": "npm --prefix Lewis run dev",
+    "ci:smoke:delivery": "start-server-and-test dev:app http://127.0.0.1:5174 \"cypress run --config-file cypress.config.js --spec cypress/e2e/03-day-3-network/delivery-quote.cy.js\"",
+    "ci:smoke:checkout": "start-server-and-test dev:app http://127.0.0.1:5174 \"cypress run --config-file cypress.config.js --spec cypress/e2e/03-day-3-network/checkout-chain.cy.js\"",
+    "ci:regression:architecture": "start-server-and-test dev:app http://127.0.0.1:5174 \"cypress run --config-file cypress.config.js --spec DO-NOT-OPEN/02-day-2-architecture/retail-architecture.cy.js\"",
+    "ci:regression:network": "start-server-and-test dev:app http://127.0.0.1:5174 \"cypress run --config-file cypress.config.js --spec cypress/e2e/03-day-3-network/retail-network.cy.js,DO-NOT-OPEN/examples-2/retail-network.cy.js\"",
+    "ci:regression:practical": "start-server-and-test dev:app http://127.0.0.1:5174 \"cypress run --config-file cypress.config.js --spec cypress/e2e/03-day-3-network/practical-assessment.cy.js\"",
+    "ci:legacy:todo": "start-server-and-test dev:app http://127.0.0.1:5174 \"cypress run --config-file cypress.config.js --spec cypress/e2e/1-getting-started/todo.cy.js\"",
+    "ci:legacy:network": "start-server-and-test dev:app http://127.0.0.1:5174 \"cypress run --config-file cypress.config.js --spec DO-NOT-OPEN/examples-2/retail-network.cy.js\"",
+    "ci:smoke": "npm run ci:smoke:delivery && npm run ci:smoke:checkout",
+    "ci:regression": "npm run ci:regression:architecture && npm run ci:regression:network && npm run ci:regression:practical",
+    "ci:legacy": "npm run ci:legacy:todo && npm run ci:legacy:network"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
-    "eslint": "^10.3.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.6.0",
-    "vite": "^8.0.12",
-    "cypress": "^13.0.0",
-    "start-server-and-test": "^2.0.3"
+    "cypress": "^15.16.0",
+    "start-server-and-test": "^3.0.5"
   }
 }
